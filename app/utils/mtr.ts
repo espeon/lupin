@@ -47,6 +47,6 @@ export class Mtr extends EventEmitter {
         });
     }
 
-    parseLine(line: string): MtrInfo | null {
+    parseLine(line: string): MtrData | null {
         const parts = line.split(' ');
 }
