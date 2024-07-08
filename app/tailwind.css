@@ -1,0 +1,7 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+    @apply bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-50 transition-all duration-150;
+}
