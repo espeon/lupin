@@ -18,7 +18,7 @@ export const loader: LoaderFunction = async ({request}) => {
 // `specifiedTheme` is the stored theme in the session storage.
 // `themeAction` is the action name that's used to change the theme in the session storage.
 export default function AppWithProviders() {
-  const data = useLoaderData()
+  const data = useLoaderData<LoaderFunction>()
   return (
     <ThemeProvider specifiedTheme={data.theme} themeAction="/action/set-theme">
       <App />
@@ -31,7 +31,7 @@ export default function AppWithProviders() {
 // the browser theme before hydration and will prevent a flash in browser.
 // The client code runs conditionally, it won't be rendered if we have a theme in session storage.
 function App() {
-  const data = useLoaderData()
+  const data = useLoaderData<LoaderFunction>()
   const [theme] = useTheme()
   return (
     <html lang="en" className={theme || 'dark'} >

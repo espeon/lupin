@@ -42,7 +42,7 @@ export default function Ping() {
     if (target === "") setIsLoading(true);
     else setIsLoading(false);
   }, [target]);
-  
+
   // doesnt work when inside the form pepega
   function disableForm() {
     setPingResults({});
@@ -145,8 +145,7 @@ export default function Ping() {
         <div className="h-8">
           <div className="text-xl font-semibold text-slate-700/75 dark:text-slate-200/75 flex place-items-end align-text-bottom h-full">
             <span className="font-normal mr-1">
-              {!siteInfo && `Tak${isLoading ? "ing" : "e"} the Mr. `}Ping
-              {siteInfo ? "ing" : " Challenge!"}
+              {siteInfo["us-east-1"] && "Pinging"}
             </span>{" "}
             {pingResults["us-east-1"]?.[0]?.host || siteInfo["us-east-1"]?.ip || ""}
           </div>
@@ -161,8 +160,8 @@ export default function Ping() {
           >
             <tr>
               <th className="text-start font-light py-2 w-28">POP</th>
-              <th className="text-start font-light py-2">Host</th>
-              <th className="text-start font-light py-2">IP</th>
+              <th className="text-start font-light py-2 w-36">Host</th>
+              <th className="text-start font-light py-2 min-w-64 w-80">IP</th>
               <th className="text-start font-light py-2 w-12">Loss</th>
               <th className="text-start font-light py-2 w-12">Sent</th>
               <th className="text-start font-light py-2 w-12">Last</th>

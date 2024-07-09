@@ -1,27 +1,14 @@
 import pingus from "pingus";
 import dns from "dns";
 import lookup, { SearchOutput } from "country-code-lookup";
-import geoip from "fast-geoip";
+import maxmind, { CityResponse } from "maxmind";
 import { loadEnv } from "vite";
 import { EventEmitter } from "events";
-
-export interface ipInfo {
-  range: [number, number];
-  country: string;
-  region: string;
-  eu: "0" | "1";
-  timezone: string;
-  city: string;
-  ll: [number, number];
-  metro: number;
-  area: number;
-}
 
 export interface SiteInfo {
   ip: string;
   rev_dns: string | null;
-  ip_lookup: ipInfo | null;
-  ip_lookup_country: SearchOutput | null;
+  ip_lookup: CityResponse | null;
 }
 
 export interface PingResult {
@@ -38,24 +25,6 @@ export interface PingResult {
 }
 
 export class PingEmitter extends EventEmitter {
-  async icymip(ip: string): Promise<SiteInfo> {
-    const geo = await geoip.lookup(ip);
-    const rev_dns = await new Promise<string | null>((resolve, reject) => {
-      dns.reverse(ip, (err, res) => {
-        if (err) {
-          resolve(null);
-        } else {
-          resolve(res.join(","));
-        }
-      });
-    });
-    return {
-      ip: ip,
-      rev_dns: rev_dns,
-      ip_lookup: geo,
-      ip_lookup_country: lookup.byIso(geo?.country ?? "SWE") ?? null,
-    };
-  }
 
   async pingWebsite(
     host: string,
@@ -98,7 +67,7 @@ export class PingEmitter extends EventEmitter {
         ip: result.ip?.label || "",
         ips: result.ips.map((ip) => ip.label),
         ipinfo: include_ipinfo
-          ? await this.icymip(result.ip?.label || "")
+          ? await icymip(result.ip?.label || "")
           : null,
         message: result.banner,
       };
@@ -149,3 +118,24 @@ export class PingEmitter extends EventEmitter {
     }
   }
 }
+
+// https://git.io/GeoLite2-City.mmdb
+
+export async function icymip(ip: string): Promise<SiteInfo> {
+    const mm = await maxmind.open<CityResponse>('./mmdb/GeoLite2-City.mmdb');
+    const geo = mm.get(ip);
+    const rev_dns = await new Promise<string | null>((resolve, reject) => {
+      dns.reverse(ip, (err, res) => {
+        if (err) {
+          resolve(null);
+        } else {
+          resolve(res.join(","));
+        }
+      });
+    });
+    return {
+      ip: ip,
+      rev_dns: rev_dns,
+      ip_lookup: geo,
+    };
+  }

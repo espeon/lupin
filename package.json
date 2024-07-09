@@ -21,6 +21,7 @@
     "country-code-lookup": "^0.1.3",
     "fast-geoip": "^1.1.88",
     "isbot": "^4.1.0",
+    "maxmind": "^4.3.20",
     "pingus": "^1.2.4",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",

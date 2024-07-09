@@ -1,4 +1,5 @@
 import { PingResult, SiteInfo } from "~/utils/ping";
+import {stdDev} from "~/utils/math";
 
 export default function PingResultRow ({ pingResults, siteInfo }: { pingResults: PingResult[], siteInfo: SiteInfo | null }) {
     const revdns = siteInfo?.rev_dns?.split(",") || [];
@@ -18,12 +19,11 @@ export default function PingResultRow ({ pingResults, siteInfo }: { pingResults:
                     ({revdns[0] + (revdns.length > 1 ? `, +${revdns.length - 1}` : "" )}
                     {siteInfo.ip_lookup &&
                       `${siteInfo.rev_dns ? " • " : ""}${[
-                        siteInfo.ip_lookup.city,
-                        siteInfo.ip_lookup.region,
-                        siteInfo.ip_lookup_country?.country ??
-                          siteInfo.ip_lookup.country,
+                        siteInfo.ip_lookup.city?.names.en,
+                        siteInfo.ip_lookup.subdivisions?.[0].names.en,
+                        siteInfo.ip_lookup.country?.names.en,
                       ]
-                        .filter((x: string) => (x == "" ? false : true))
+                        .filter((x: string | undefined) => x)
                         .join(", ")}`}
                     )
                   </span>
@@ -49,11 +49,7 @@ export default function PingResultRow ({ pingResults, siteInfo }: { pingResults:
                   .time?.toFixed(1)}
               </td>
               <td>
-                {(
-                  pingResults
-                    .sort((a: { time: any; }, b: { time: any; }) => b.time! - a.time!)
-                    .reduce((acc: any, r: { time: any; }) => acc + r.time!, 0) / pingResults.length
-                ).toFixed(1)}
+                {stdDev(pingResults.map((r: { time: any; }) => r.time!)).toFixed(1)}
               </td>
             </tr>
           )
