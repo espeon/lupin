@@ -218,7 +218,7 @@ const MtrStream = () => {
                   <td className="">{(hop?.packets && (hop?.packets.sort((a, b) => a.pingtime - b.pingtime)[0].pingtime/1000).toFixed(2)) || ""}</td>
                   <td className="">{(hop?.packets && (hop?.packets.sort((a, b) => b.pingtime - a.pingtime)[0].pingtime/1000).toFixed(2)) || ""}</td>
                   {/* st. dev. */}
-                  <td className="">{(hop?.packets && stdDev(hop?.packets.map(p => p.pingtime)).toFixed(2)) || ""}</td>
+                  <td className="">{(hop?.packets && stdDev(hop?.packets.map(p => p.pingtime/1000)).toFixed(2)) || ""}</td>
                 </tr>
               );
             })}
